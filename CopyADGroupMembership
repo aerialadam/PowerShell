@@ -1,0 +1,17 @@
+  [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
+  $User1= [Microsoft.VisualBasic.Interaction]::InputBox("Enter the name of the user you wish to copy", "Name")
+
+  [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
+  $User2= [Microsoft.VisualBasic.Interaction]::InputBox("Enter the name of the user to copy to", "Name")
+
+ # First connect to the AD infrastructure
+   import-module ActiveDirectory
+
+ # Next specify the object to copy groups from
+   $copyfromuser = Get-ADUser $User1 -Properties memberof
+
+ # After that specify the user that needs that same group membership
+   $copytouser = Get-ADUser $User2 -Properties memberof
+
+   $copyfromuser.MemberOf | where{$copytouser.MemberOf -notcontains $_} |
+   Add-ADGroupMember -Members $copytouser

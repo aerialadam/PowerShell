@@ -1,0 +1,23 @@
+# Connect to O365
+# You will be prompted for 2FA credentials
+  Connect-MsolService
+
+# Import necessary module
+  Import-Module ActiveDirectory
+
+# Comment out which of the below does not apply
+
+# Disable-ADAccount -Identity firstname.lastname
+  Remove-ADUser -Identity firstname.lastname -Confirm:$false
+
+# Comment out which of the below does not apply
+  Set-MsolUserLicense -UserPrincipalName firstname.lastname@aerial-direct.co.uk -RemoveLicenses aerialdirectltd:STANDARDPACK
+
+# Set-MsolUserLicense -UserPrincipalName firstname.lastname@aerial-direct.co.uk -RemoveLicenses aerialdirectltd:ENTERPRISEPACK
+
+# If disabling rather than deleting AD account, then comment out the below.  Deleted mailboxes are retained for up to ~30 days
+  Remove-MsolUser -UserPrincipalName firstname.lastname@aerial-direct.co.uk -Force
+
+  Write-Host "---------------------------------"
+  Write-Host "User has now been deleted"
+  Write-Host "---------------------------------"

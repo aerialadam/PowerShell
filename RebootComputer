@@ -1,0 +1,12 @@
+clear-host
+write-host
+write-host
+
+$computer = Read-Host "Enter the name of the computer to reboot"
+
+write-host
+write-host
+
+Restart-Computer $computer -Force
+
+Write-Host "Computer now rebooting..."

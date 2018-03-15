@@ -1,0 +1,10 @@
+Clear-Host
+Write-Host
+Write-Host
+
+$delegate = Read-Host "Please enter the name of the delegate's mailbox you wish to give access to"
+$owner = Read-Host "Please enter the name of the user to have full access rights"
+
+Add-MailboxPermission -identity $delegate -user $owner -AccessRights FullAccess -InheritanceType All
+
+Write-Host "Full access has now been granted"

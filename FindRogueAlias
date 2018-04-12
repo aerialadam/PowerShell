@@ -1,0 +1,1 @@
+Get-Mailbox -Identity * | Where-Object {$_.EmailAddresses -like 'smtp:eservice@aerial-direct.co.uk'} | Format-List Identity, EmailAdresses​

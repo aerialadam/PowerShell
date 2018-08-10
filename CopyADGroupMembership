@@ -15,3 +15,7 @@
 
    $copyfromuser.MemberOf | where{$copytouser.MemberOf -notcontains $_} |
    Add-ADGroupMember -Members $copytouser
+
+   $wshell = New-Object -ComObject Wscript.Shell
+
+   $wshell.Popup("Group membership has now been copied",0,"Done",0x1)

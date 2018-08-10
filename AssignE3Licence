@@ -1,0 +1,20 @@
+# Bear in mind you will need to wait for replication across the DC and DirSync to have taken place before running the below
+
+# You will be promped for 2FA credentials at this point
+
+  Connect-MsolService
+    
+  [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
+  $user= [Microsoft.VisualBasic.Interaction]::InputBox("Enter the email address of the user")
+
+# Sets geographical location of user and default O365 language
+
+  Set-MsolUser -UserPrincipalName "$user" -UsageLocation GB
+
+# Assigns E3 Office 365 licence
+
+  Set-MsolUserLicense -UserPrincipalName "$user" -AddLicenses aerialdirectltd:ENTERPRISEPACK
+
+  $wshell = New-Object -ComObject Wscript.Shell
+
+  $wshell.Popup("Office 365 licence has now been assigned",0,"Done",0x1)

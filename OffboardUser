@@ -1,0 +1,54 @@
+  [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
+  $user= [Microsoft.VisualBasic.Interaction]::InputBox("Enter username of the staff member", "Name")
+
+# Imports Active Directory module
+
+  Import-Module ActiveDirectory
+
+
+# Resets user's password
+
+  $secpaswd= ConvertTo-SecureString -String "L3avEr2018!" -AsPlainText -Force
+
+  Set-ADAccountPassword -Reset -NewPassword $secpaswd -Identity $user
+
+  Set-ADUser -Identity $user -ChangePasswordAtLogon $false
+
+
+# Removes group membership
+
+  Get-ADUser -Identity $user -Properties MemberOf | ForEach-Object {
+  $_.MemberOf | Remove-ADGroupMember -Members $_.DistinguishedName -Confirm:$false
+}
+
+
+# Moves to Leaver's OU
+
+  Get-ADUser $user | Move-ADObject -TargetPath "OU=Leavers,DC=ad,DC=aerial-direct,DC=co,DC=uk"
+
+
+# Connects to Exchange Online and prompts for Office 365 credentials
+
+  $Credential = Get-Credential
+
+  $ExchangeSession = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri "https://outlook.office365.com/powershell-liveid" -Credential $credential -Authentication "Basic" -AllowRedirection
+  
+  Import-PSSession $ExchangeSession
+
+  Connect-MsolService
+
+  
+# Forwards mail to Team Leader
+
+  [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
+  $user1= [Microsoft.VisualBasic.Interaction]::InputBox("Enter the email address of the staff member", "Name")
+
+  [System.Reflection.Assembly]::LoadWithPartialName('Microsoft.VisualBasic') | Out-Null
+  $user2= [Microsoft.VisualBasic.Interaction]::InputBox("Enter the email address of the team leader to forward mail to", "Name")  
+   
+  Set-Mailbox $user1 -ForwardingAddress $user2
+
+  
+  $wshell = New-Object -ComObject Wscript.Shell
+
+  $wshell.Popup("User has now been offboarded",0,"Done",0x1)

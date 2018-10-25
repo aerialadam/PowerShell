@@ -1,0 +1,26 @@
+$UserCredential = Get-Credential
+
+$Session = New-PSSession -ConfigurationName Microsoft.Exchange -ConnectionUri https://outlook.office365.com/powershell-liveid/ -Credential $UserCredential -Authentication Basic -AllowRedirection
+
+Import-PSSession $Session
+
+
+$usermailbox = read-Host 'Users mailbox to convert to shared mailbox'
+
+$supervisor = read-Host 'User who is going to be having access to shared mailbox'
+
+Set-Mailbox $usermailbox -Type shared
+
+Add-MailboxPermission -Identity $usermailbox -User $supervisor -AccessRights FullAccess
+
+
+Connect-msolservice -credential $UserCredential
+
+Set-MsolUserLicense -UserPrincipalName "$usermailbox" -RemoveLicenses aerialdirectltd:STANDARDPACK
+
+Set-MsolUserLicense -UserPrincipalName "$usermailbox" -RemoveLicenses aerialdirectltd:ENTERPRISEPACK
+
+
+$wshell = New-Object -ComObject Wscript.Shell
+
+$wshell.Popup("Office 365 mailbox now converted to Shared",0,"Done",0x1)
